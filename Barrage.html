@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>弹幕墙</title>
+<style type = "text/css">
+*{padding:0;margin:0;}
+#wall{width:90%; height:600px;margin:0 auto;border:1px solid gray;position:relative;background:gray url(clown.jpg) top left no-repeat; background-size:cover;overflow:hidden;}
+.wrap{width:40%; margin:0 auto;margin-top:20px;padding:0 10%;}
+#userInput{border:1px solid gray;width:80%; text-indent:1em;}
+#userInput:hover{width:80%;border:1px solid gray;box-shadow:0px 0px 4px blue;}
+.btn_wrap{width:60%;margin:0 auto;margin-top:20px;}
+#launch,#clearSc{width:40%;background:transparent;border-style:none;font-family:"微软雅黑";}
+#launch{border:1px solid red;}
+#clearSc{border:1px solid gray;}
+#launch,#clearSc,#userInput{height:30px;border-radius:2px;}
+.show1{color:#fff;top:20%;}
+.show2{color:yellow;top:50%;}
+@keyframes rightToLeft
+{
+	0%{right:0;}
+	100%{right:100%;}
+}
+.show{position:absolute;right:0;animation: rightToLeft linear 5s infinite both;font-family:"微软雅黑";width:10%;text-align:right;}
+.show:hover{animation-play-state:paused; font-size:1.5em;}
+</style>
+</head>
+<body>
+<div>
+	<div id="wall">
+		<div class="show show1">吓死宝宝啦</div>
+		<div class="show show2">王炸！</div>
+	</div>
+	<div class="wrap">
+		<form action="">
+			<input type="text" id="userInput" placeholder="说点儿什么吧">			
+		</form>		
+		<div class="btn_wrap">
+			<button id="launch">发射</button>
+			<button id="clearSc">清屏</button>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function DanMu()
+{
+	this.init.apply(this,arguments);
+}
+
+DanMu.prototype = 
+{
+	init: function()
+	{
+		var that = this;
+		this.wall = this.getElement('wall');
+		this.user = this.getElement('userInput');
+		this.launch = this.getElement('launch');
+		this.clearSc = this.getElement('clearSc');
+		this.oForm = document.getElementsByTagName('form')[0];
+		this.oHeight = this.wall.clientHeight;
+		this.colors = ["red","green","blue","yellow","pink"];
+
+		this.addEvent(this.launch, 'click', function()
+		{
+			if(that.check())
+			{
+				that.launchDanMu();
+				that.oForm.reset();
+			} else
+			{
+				alert('说点儿什么吧');
+			}
+		});
+
+		this.addEvent(this.clearSc, 'click', function()
+		{
+			that.clearWall();
+		});
+
+	},
+
+	getElement:function(id)
+	{
+		return typeof id === 'string' ? document.getElementById(id) : id;
+	},
+
+	check:function()
+	{
+		return this.user.value !== "" ? true : false;
+	},
+
+	launchDanMu:function()
+	{
+		var newNode = document.createElement('div');
+		this.wall.appendChild(newNode);
+		newNode.innerHTML = this.user.value;
+		newNode.className = "show";
+		this.css(newNode);
+	},
+
+	clearWall:function()
+	{
+		while(this.wall.hasChildNodes())
+		{
+			this.wall.removeChild(this.wall.childNodes[0]);
+		}		
+	},
+
+	css:function(a)
+	{
+		a.style.color = this.colors[Math.floor(Math.random()*5)];
+		a.style.top = Math.floor(Math.random()*this.oHeight)+"px";
+	},
+
+	addEvent : function (oElement, sEventType, fnHandler)
+    {
+        return oElement.addEventListener ? oElement.addEventListener(sEventType, fnHandler, false) : oElement.attachEvent("on" + sEventType, fnHandler)
+    }
+}
+
+window.onload = function()
+{
+	new DanMu();
+}
+</script>	
+</body>
+</html>
